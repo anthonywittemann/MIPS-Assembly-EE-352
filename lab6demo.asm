@@ -18,11 +18,13 @@ syscall
 
 li $v0,10
 syscall
- 
+
+ #base case 
 fac: 
-	bne 	$a0, $zero, gen # if $a0<>0, goto generic case
+	bne 	$a0, $zero, gen # if $a0 != 0, goto generic case
 	ori 	$v0, $zero, 1 	# else set result $v0 = 1
 	jr 	$ra 		# return
+#recursive case
 gen:
 	addiu 	$sp, $sp, -8 	# make room for 2 registers on stack
 	sw 	$ra, 4($sp) 	# save return address register $ra
