@@ -18,9 +18,7 @@ syscall 		# ask for line size
 li $v0,5
 syscall 		# read in value
 blt $v0, $0, exit	# check if less than 0
-b isPowerOf2		# check if a power of 2
-bne $v0, 1, exit	
-jal isPowerOf2
+jal isPowerOf2		# check if a power of 2	
 add $t0,$v0,$zero 	# $t0 = line size
 
 #TODO check if non-negative power of 2
@@ -42,7 +40,7 @@ syscall 		#ask for data size
 li $v0,5
 syscall 		#read in value
 blt $v0, $0, exit	# check if less than 0
-jal isPowerOf2		# check if a power of 2
+#jal isPowerOf2		# check if a power of 2
 add $t2,$v0,$zero 	# $t2 = data size
 
 li $v0, 4
@@ -63,13 +61,16 @@ blt $v0, $0, exit	# check if less than 0
 add $t4,$v0,$zero 	# $t4 = miss penalty
 
 
-
+#######---TODO not working properly :/ 
 ####Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** 
 ####---------------------------------------------------------------------------------------------------------------------------------
-isPowerOf2:     #*******TODO******
+isPowerOf2:     	# while:
+beq $v0, 1, return	# base case: if $v0 = 1, then exit subroutine
+div $v0, $v0, 2		# else: $v0 /= 2		
 
-
-
+j isPowerOf2		# continue while loop
+return:
+jr $ra	
 
 ####EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
