@@ -20,30 +20,26 @@ la $a0, lineSizeMsg
 syscall 		# ask for line size
 li $v0,5
 syscall 		# read in value
-blt $v0, $0, exit	# check if less than 0
+bltz $v0, exit		# check if less than 0
 jal isPowerOf2		# check if a power of 2	
 add $t0,$v0,$zero 	# $t0 = line size
-
-#TODO check if non-negative power of 2
 
 li $v0, 4
 la $a0, associativityMsg
 syscall 		#ask for associativity
 li $v0,5
 syscall 		#read in value
-blt $v0, $0, exit	# check if less than 0
+bltz $v0, exit		# check if less than 0
 jal isPowerOf2		# check if a power of 2
 add $t1,$v0,$zero 	# $t1 = associativity
-
-#TODO check if valid input
 
 li $v0, 4
 la $a0, dataSizeMsg
 syscall 		#ask for data size
 li $v0,5
 syscall 		#read in value
-blt $v0, $0, exit	# check if less than 0
-#jal isPowerOf2		# check if a power of 2
+bltz $v0, exit		# check if less than 0
+jal isPowerOf2		# check if a power of 2
 add $t2,$v0,$zero 	# $t2 = data size
 
 li $v0, 4
@@ -51,20 +47,24 @@ la $a0, replacementPolicyMsg
 syscall 		#ask for replacement policy
 li $v0,5
 syscall 		#read in value
-	# check if 0 or 1 *********** TODO**************
+bnez $v0, isEqualTo1	# check if 0 or 1 
 add $t3,$v0,$zero 	# $t3 = replacement policy
-
 
 li $v0, 4
 la $a0, missPenaltyMsg
 syscall 		#ask for miss penalty
 li $v0,5
 syscall 		#read in value
-blt $v0, $0, exit	# check if less than 0
+bltz $v0, exit		# check if less than 0
 add $t4,$v0,$zero 	# $t4 = miss penalty
 
 
-#######---TODO not working properly :/ 
+
+####called after a replacement policy input != 0, checks if equal to 1
+isEqualTo1:
+bne $v0, 1, exit
+
+
 ####Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** 
 ####---------------------------------------------------------------------------------------------------------------------------------
 isPowerOf2:     	# while:
@@ -76,6 +76,8 @@ bne $10, $0, exit	# base case: if remainder != 0, invalid input
 j isPowerOf2		# continue while loop
 return:
 jr $ra	
+
+
 
 ####EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
