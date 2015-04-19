@@ -6,11 +6,14 @@ dataSizeMsg: .asciiz "\n\nSpecify the total size of the data in the cache. \nThi
 replacementPolicyMsg: .asciiz "\n\nSpecify the replacement policy to be used. \nShould be either 0 for random replacement or 1 for LRU. No other values are valid: "
 missPenaltyMsg: .asciiz "\n\nSpecify the number of cycles penalized on a cache miss. \nMay be any positive integer: "
 invalidInputMsg: .asciiz "\nInvalid Input. Program will exit"
+
 .text
 main:
 
 #### GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** ***
 ####-------------------------------------------------------------------------------------------------------------------------------
+add $s2, $s2, 2		# $s2 = 2; //$s2 will be the divisor in the calculations of whether input is a power of 2
+
 
 li $v0, 4
 la $a0, lineSizeMsg
@@ -65,9 +68,11 @@ add $t4,$v0,$zero 	# $t4 = miss penalty
 ####Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** 
 ####---------------------------------------------------------------------------------------------------------------------------------
 isPowerOf2:     	# while:
-beq $v0, 1, return	# base case: if $v0 = 1, then exit subroutine
-div $v0, $v0, 2		# else: $v0 /= 2		
-
+beq $v0, 1, return	# base case: if $v0 = 1, then valid input
+div $v0, $s2		# else: $v0 /= 2
+mflo $v0		# $v0 = quotient
+mfhi $10		# $10 = remainder
+bne $10, $0, exit	# base case: if remainder != 0, invalid input
 j isPowerOf2		# continue while loop
 return:
 jr $ra	
