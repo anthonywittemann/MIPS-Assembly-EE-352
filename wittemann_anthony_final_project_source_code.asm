@@ -1,11 +1,15 @@
 # Cache Configuration:
 .data
-lineSizeMsg: .asciiz "\n\nSpecify the line size for the cache in bytes. \nThis should always be a non-negative power of 2 (i.e. 1,2,4,8,etc): "
-associativityMsg: .asciiz "\n\nSpecify the associativity of the cache. \nA value of 1 implies a direct-mapped cache, while a 0 value implies fully-associative. \nShould always be a non-negative power of 2: "
-dataSizeMsg: .asciiz "\n\nSpecify the total size of the data in the cache. \nThis does not include the size of any overhead (such as tag size). \nIt should be specified in KB and be a non-negative power of 2. \nFor example, a value of 64 means a 64KB cache: "
-replacementPolicyMsg: .asciiz "\n\nSpecify the replacement policy to be used. \nShould be either 0 for random replacement or 1 for LRU. No other values are valid: "
-missPenaltyMsg: .asciiz "\n\nSpecify the number of cycles penalized on a cache miss. \nMay be any positive integer: "
+lineSizeMsg: .asciiz "\nSpecify the line size for the cache in bytes. \nThis should always be a non-negative power of 2 (i.e. 1,2,4,8,etc): "
+associativityMsg: .asciiz "\nSpecify the associativity of the cache. \nA value of 1 implies a direct-mapped cache, while a 0 value implies fully-associative. \nShould always be a non-negative power of 2: "
+dataSizeMsg: .asciiz "\nSpecify the total size of the data in the cache. \nThis does not include the size of any overhead (such as tag size). \nIt should be specified in KB and be a non-negative power of 2. \nFor example, a value of 64 means a 64KB cache: "
+replacementPolicyMsg: .asciiz "\nSpecify the replacement policy to be used. \nShould be either 0 for random replacement or 1 for LRU. No other values are valid: "
+missPenaltyMsg: .asciiz "\nSpecify the number of cycles penalized on a cache miss. \nMay be any positive integer: "
 invalidInputMsg: .asciiz "\nInvalid Input. Program will exit"
+
+totalHitRateMsg: .asciiz "\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
+totalRuntimeMsg: .asciiz "\nTotal Runtime (total processor cycles assuming \nthat the last memory access was the last instruction of the program): "
+avgMemAccessLatencyMsg: .asciiz "\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
 
 .text
 main:
@@ -60,6 +64,14 @@ add $t4,$v0,$zero 	# $t4 = miss penalty
 
 
 
+
+
+
+
+####^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+####SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** ***
+####vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
 ####called after a replacement policy input != 0, checks if equal to 1
 isEqualTo1:
 bne $v0, 1, exit
@@ -77,6 +89,33 @@ j isPowerOf2		# continue while loop
 return:
 jr $ra	
 
+
+####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
+####---------------------------------------------------------------------------------------------------------------------------------
+displayResults:
+li $v0, 4
+la $a0, totalHitRateMsg
+syscall
+
+ori $v0, $0, 1			# Display the total hit rate	
+add $a0, $s0, $0	 	#TODO - change $s0 to totalHitRate
+syscall
+
+li $v0, 4
+la $a0, totalRuntimeMsg
+syscall
+
+ori $v0, $0, 1			# Display the total runtime		
+add $a0, $s0, $0		#TODO - change $s0 to totalRuntime 
+syscall
+
+li $v0, 4
+la $a0, avgMemAccessLatencyMsg
+syscall
+
+ori $v0, $0, 1			# Display the average memory access latency	
+add $a0, $s0, $0	 	#TODO - change $s0 to avgMemAccessLatency
+syscall
 
 
 ####EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** ***
