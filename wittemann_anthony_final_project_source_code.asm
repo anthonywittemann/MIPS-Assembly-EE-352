@@ -5,69 +5,77 @@ associativityMsg: .asciiz "\n\nSpecify the associativity of the cache. \nA value
 dataSizeMsg: .asciiz "\n\nSpecify the total size of the data in the cache. \nThis does not include the size of any overhead (such as tag size). \nIt should be specified in KB and be a non-negative power of 2. \nFor example, a value of 64 means a 64KB cache: "
 replacementPolicyMsg: .asciiz "\n\nSpecify the replacement policy to be used. \nShould be either 0 for random replacement or 1 for LRU. No other values are valid: "
 missPenaltyMsg: .asciiz "\n\nSpecify the number of cycles penalized on a cache miss. \nMay be any positive integer: "
-
+invalidInputMsg: .asciiz "\nInvalid Input. Program will exit"
 .text
 main:
 
 #### GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** *** GET INPUT *** ***
-####------------------------------------------------------------------------------------------------------------------------------
+####-------------------------------------------------------------------------------------------------------------------------------
 
 li $v0, 4
 la $a0, lineSizeMsg
-syscall #ask for line size
+syscall 		# ask for line size
 li $v0,5
-syscall #read in value
-add $t0,$v0,$zero #move to $t0
+syscall 		# read in value
+blt $v0, $0, exit	# check if less than 0
+b isPowerOf2		# check if a power of 2
+bne $v0, 1, exit	
+jal isPowerOf2
+add $t0,$v0,$zero 	# $t0 = line size
 
-#TODO check if valid input
+#TODO check if non-negative power of 2
 
 li $v0, 4
 la $a0, associativityMsg
-syscall #ask for associativity
+syscall 		#ask for associativity
 li $v0,5
-syscall #read in value
-add $t1,$v0,$zero #move to $t1
-
-#TODO check if valid input
-
-li $v0, 4
-la $a0, replacementPolicyMsg
-syscall #ask for replacement policy
-li $v0,5
-syscall #read in value
-add $t2,$v0,$zero #move to $t2
+syscall 		#read in value
+blt $v0, $0, exit	# check if less than 0
+jal isPowerOf2		# check if a power of 2
+add $t1,$v0,$zero 	# $t1 = associativity
 
 #TODO check if valid input
 
 li $v0, 4
 la $a0, dataSizeMsg
-syscall #ask for data size
+syscall 		#ask for data size
 li $v0,5
-syscall #read in value
-add $t3,$v0,$zero #move to $t3
+syscall 		#read in value
+blt $v0, $0, exit	# check if less than 0
+jal isPowerOf2		# check if a power of 2
+add $t2,$v0,$zero 	# $t2 = data size
 
-#TODO check if valid input
+li $v0, 4
+la $a0, replacementPolicyMsg
+syscall 		#ask for replacement policy
+li $v0,5
+syscall 		#read in value
+	# check if 0 or 1 *********** TODO**************
+add $t3,$v0,$zero 	# $t3 = replacement policy
+
 
 li $v0, 4
 la $a0, missPenaltyMsg
-syscall #ask for miss penalty
+syscall 		#ask for miss penalty
 li $v0,5
-syscall #read in value
-add $t4,$v0,$zero #move to $t4
-
-#TODO check if valid input
-
+syscall 		#read in value
+blt $v0, $0, exit	# check if less than 0
+add $t4,$v0,$zero 	# $t4 = miss penalty
 
 
 
-
-
-
+####Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** 
+####---------------------------------------------------------------------------------------------------------------------------------
+isPowerOf2:     #*******TODO******
 
 
 
 
 ####EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
+exit:
+li $v0, 4
+la $a0, invalidInputMsg
+syscall
 li $v0,10		# bye, bye
 syscall
