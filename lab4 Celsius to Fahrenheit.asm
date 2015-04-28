@@ -75,7 +75,7 @@ after:
 	syscall
 after2:	
 	#instead of exit ask if continue main
-	j main1
+#	j main1
 	
 	# Exit
 	ori     $v0, $0, 10

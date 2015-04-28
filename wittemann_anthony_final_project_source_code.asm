@@ -45,8 +45,8 @@ add $s2, $s2, 2		# $s2 = 2; //$s2 will be the divisor in the calculations of whe
 li $v0, 4
 la $a0, lineSizeMsg
 syscall 		# ask for line size
-li $v0,5
-syscall 		# read in value
+ori     $v0, $0, 5
+syscall 		#read in value
 blt $v0, $0, exit	# check if less than 0
 jal isPowerOf2		# check if a power of 2	
 add $t0,$v0,$zero 	# $t0 = line size
@@ -54,16 +54,18 @@ add $t0,$v0,$zero 	# $t0 = line size
 li $v0, 4
 la $a0, associativityMsg
 syscall 		#ask for associativity
-li $v0,5
+ori     $v0, $0, 5
 syscall 		#read in value
 blt $v0, $0, exit	# check if less than 0
+beq $v0, $0, makeAssociativityVariable
 jal isPowerOf2		# check if a power of 2
+makeAssociativityVariable:
 add $t1,$v0,$zero 	# $t1 = associativity
 
 li $v0, 4
 la $a0, dataSizeMsg
 syscall 		#ask for data size
-li $v0,5
+ori     $v0, $0, 5
 syscall 		#read in value
 blt $v0, $0, exit	# check if less than 0
 jal isPowerOf2		# check if a power of 2
@@ -72,7 +74,7 @@ add $t2,$v0,$zero 	# $t2 = data size
 li $v0, 4
 la $a0, replacementPolicyMsg
 syscall 		#ask for replacement policy
-li $v0,5
+ori     $v0, $0, 5
 syscall 		#read in value
 bne $v0, $0, isEqualTo1 # check if 0 or 1
 makeReplacementVariable:	 
@@ -81,18 +83,20 @@ add $t3,$v0,$zero 	# $t3 = replacement policy
 li $v0, 4
 la $a0, missPenaltyMsg
 syscall 		#ask for miss penalty
-li $v0,5
+ori     $v0, $0, 5
 syscall 		#read in value
 blt $v0, $0, exit	# check if less than 0
 add $t4,$v0,$zero 	# $t4 = miss penalty
 
 
-
+#For Testing, we will just go to set associative LRU...TODO take out for EC
+j setAssociativeLRU
 
 
 ##check for LRU ($t3 = 1) or Random ($t3 = 0) 
 beq $t3, $0, randomReplacement
-b LRU
+li $t7, 1
+beq $t3, $t7, LRU
 
 ####^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ####SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** ***
@@ -101,15 +105,24 @@ b LRU
 LRU:
 ##check for set Associate LRU
 ##check if $t1 == 0 then fully     or     $t1 == 1 then direct mapping     else it's set associative
+li $v0, 1
+move $a0, $t1
+syscall 		#print out cache associativity - TODO why does it print out a 1 when I enter in a power of 2?????
+
 beq $t1, $0, fullyAssociativeLRU
 li $t7, 1
 beq $t1, $t7, directMappingLRU
 b setAssociativeLRU
 
 
+
 randomReplacement:
 ##go to 
 ##check if $t1 == 0 then fully     or     $t1 == 1 then direct mapping     else it's set associative
+li $v0, 1
+move $a0, $t1
+syscall 		#print out cache associativity - TODO why does it print out a 1 when I enter in a power of 2?????
+
 beq $t1, $0, fullyAssociativeRnd
 li $t7, 1
 beq $t1, $t7, directMappingRnd
@@ -125,6 +138,9 @@ la $a0, setAssociativeLRUMsg
 syscall 		
 
 
+j exit1
+
+
 ####can go in any cache unit, least recently used replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 fullyAssociativeLRU:
@@ -133,12 +149,18 @@ la $a0, fullyAssociativeLRUMsg
 syscall 		
 
 
+j exit1
+
+
 ####can go in any cache unit, least recently used replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 directMappingLRU:
 li $v0, 4
 la $a0, directMappingLRUMsg
 syscall 
+
+
+j exit1
 
 
 # RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** ***
@@ -150,20 +172,27 @@ la $a0, setAssociativeRndMsg
 syscall 
 
 
+j exit1
+
 
 ####can go in any cache unit, random replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
-fullyAssociativeRnd:
+fullyAssociativeRnd:	#can get here 
 li $v0, 4
 la $a0, fullyAssociativeRndMsg
 syscall 
 
+j exit1
+
+
 ####maps from memory to cache directly, random replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
-directMappingRnd:
+directMappingRnd:	#can get here
 li $v0, 4
 la $a0, directMappingRndMsg
 syscall 
+
+j exit1
 
 
 
@@ -214,15 +243,17 @@ syscall
 
 ori $v0, $0, 1			# Display the average memory access latency	
 lw $s0, avgMemAccessLatency
-add $a0, $s0, $0 #TODO - test if this works
+add $a0, $s0, $0 
 syscall
 
 
 ####EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
-exit:
+exit:			#used for invalid input
 li $v0, 4
 la $a0, invalidInputMsg
 syscall
+
+exit1: 			#used for normal exit 
 li $v0,10		# bye, bye
 syscall
