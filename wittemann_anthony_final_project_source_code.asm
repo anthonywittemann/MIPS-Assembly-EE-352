@@ -1,4 +1,7 @@
-#TODO - refactor to create variables for input data instead of $t0-$t4
+#TODO 
+#1 - implement set associative LRU
+#2 - refactor to create variables for input data instead of $t0-$t4
+#3 - implement other 5 cases for EC
 
 
 # Cache Configuration:
@@ -93,7 +96,7 @@ beq $t1, 1, directMappingRnd
 b setAssociativeRnd
 
 
-
+# LRU REPLACEMENT *** *** LRU REPLACEMENT *** *** LRU REPLACEMENT *** *** LRU REPLACEMENT *** *** LRU REPLACEMENT *** ***
 ####You ONLY NEED to implement set associative cache with LRU replacement policy. *** SET ASSOCIATIVE CACHE WITH LRU REPLACEMENT POLICY
 ####---------------------------------------------------------------------------------------------------------------------------------
 setAssociativeLRU:
@@ -110,8 +113,7 @@ fullyAssociativeLRU:
 directMappingLRU:
 
 
-
-
+# RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** ***
 ####maps from memory to cache set directly, random replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 setAssociativeRnd:
