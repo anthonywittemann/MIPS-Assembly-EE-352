@@ -1,3 +1,6 @@
+#TODO - refactor to create variables for input data instead of $t0-$t4
+
+
 # Cache Configuration:
 .data
 lineSizeMsg: .asciiz "\nSpecify the line size for the cache in bytes. \nThis should always be a non-negative power of 2 (i.e. 1,2,4,8,etc): "
@@ -64,18 +67,69 @@ bltz $v0, exit		# check if less than 0
 add $t4,$v0,$zero 	# $t4 = miss penalty
 
 
-##check for set Associate LRU
-##check if $t1 != 0 && $t1 != 1 (which means that it's set associative
-
-
-
-
+##check for LRU ($t3 = 1) or Random ($t3 = 0) 
+beq $t3, $0, randomReplacement
+beq $t3, 1, LRU
 
 
 
 ####^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ####SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** ***
 ####vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+LRU:
+##check for set Associate LRU
+##check if $t1 != 0 && $t1 != 1 (which means that it's set associative
+beq $t1, $0, fullyAssociativeLRU
+beq $t1, 1, directMappingLRU
+b setAssociativeLRU
+
+
+randomReplacement:
+##go to 
+##check if $t1 0==0 --> fully or $t1 == 1 --> direct mapping or it's set associative
+beq $t1, $0, fullyAssociativeRnd
+beq $t1, 1, directMappingRnd
+b setAssociativeRnd
+
+
+
+####You ONLY NEED to implement set associative cache with LRU replacement policy. *** SET ASSOCIATIVE CACHE WITH LRU REPLACEMENT POLICY
+####---------------------------------------------------------------------------------------------------------------------------------
+setAssociativeLRU:
+
+
+
+####can go in any cache unit, least recently used replacement scheme
+####---------------------------------------------------------------------------------------------------------------------------------
+fullyAssociativeLRU:
+
+
+####can go in any cache unit, least recently used replacement scheme
+####---------------------------------------------------------------------------------------------------------------------------------
+directMappingLRU:
+
+
+
+
+####maps from memory to cache set directly, random replacement scheme
+####---------------------------------------------------------------------------------------------------------------------------------
+setAssociativeRnd:
+
+
+
+####can go in any cache unit, random replacement scheme
+####---------------------------------------------------------------------------------------------------------------------------------
+fullyAssociativeRnd:
+
+
+####maps from memory to cache directly, random replacement scheme
+####---------------------------------------------------------------------------------------------------------------------------------
+directMappingRnd:
+
+
+
+
 
 ####called after a replacement policy input != 0, checks if equal to 1
 isEqualTo1:
@@ -93,11 +147,6 @@ bne $10, $0, exit	# base case: if remainder != 0, invalid input
 j isPowerOf2		# continue while loop
 return:
 jr $ra	
-
-
-####You ONLY NEED to implement set associative cache with LRU replacement policy. *** SET ASSOCIATIVE CACHE WITH LRU REPLACEMENT POLICY
-####---------------------------------------------------------------------------------------------------------------------------------
-setAssociativeLRU:
 
 
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
