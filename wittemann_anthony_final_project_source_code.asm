@@ -51,7 +51,8 @@ la $a0, replacementPolicyMsg
 syscall 		#ask for replacement policy
 li $v0,5
 syscall 		#read in value
-bnez $v0, isEqualTo1	# check if 0 or 1 
+bne $v0, $0, isEqualTo1 # check if 0 or 1
+makeReplacementVariable:	 
 add $t3,$v0,$zero 	# $t3 = replacement policy
 
 li $v0, 4
@@ -61,6 +62,10 @@ li $v0,5
 syscall 		#read in value
 bltz $v0, exit		# check if less than 0
 add $t4,$v0,$zero 	# $t4 = miss penalty
+
+
+##check for set Associate LRU
+##check if $t1 != 0 && $t1 != 1 (which means that it's set associative
 
 
 
@@ -75,7 +80,7 @@ add $t4,$v0,$zero 	# $t4 = miss penalty
 ####called after a replacement policy input != 0, checks if equal to 1
 isEqualTo1:
 bne $v0, 1, exit
-
+j makeReplacementVariable
 
 ####Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** 
 ####---------------------------------------------------------------------------------------------------------------------------------
@@ -88,6 +93,11 @@ bne $10, $0, exit	# base case: if remainder != 0, invalid input
 j isPowerOf2		# continue while loop
 return:
 jr $ra	
+
+
+####You ONLY NEED to implement set associative cache with LRU replacement policy. *** SET ASSOCIATIVE CACHE WITH LRU REPLACEMENT POLICY
+####---------------------------------------------------------------------------------------------------------------------------------
+setAssociativeLRU:
 
 
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
