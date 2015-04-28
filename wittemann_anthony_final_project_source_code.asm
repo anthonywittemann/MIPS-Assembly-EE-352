@@ -47,7 +47,7 @@ la $a0, lineSizeMsg
 syscall 		# ask for line size
 li $v0,5
 syscall 		# read in value
-bltz $v0, exit		# check if less than 0
+blt $v0, $0, exit	# check if less than 0
 jal isPowerOf2		# check if a power of 2	
 add $t0,$v0,$zero 	# $t0 = line size
 
@@ -56,7 +56,7 @@ la $a0, associativityMsg
 syscall 		#ask for associativity
 li $v0,5
 syscall 		#read in value
-bltz $v0, exit		# check if less than 0
+blt $v0, $0, exit	# check if less than 0
 jal isPowerOf2		# check if a power of 2
 add $t1,$v0,$zero 	# $t1 = associativity
 
@@ -65,7 +65,7 @@ la $a0, dataSizeMsg
 syscall 		#ask for data size
 li $v0,5
 syscall 		#read in value
-bltz $v0, exit		# check if less than 0
+blt $v0, $0, exit	# check if less than 0
 jal isPowerOf2		# check if a power of 2
 add $t2,$v0,$zero 	# $t2 = data size
 
