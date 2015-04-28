@@ -1,6 +1,6 @@
 #TODO 
 #1 - implement set associative LRU
-#2 - refactor to create variables for input data instead of $t0-$t4
+#2 - refactor to create variables for input data instead of $t0-$t4 -- might take too much time & not worth
 #3 - implement other 5 cases for EC
 
 
@@ -16,6 +16,10 @@ invalidInputMsg: .asciiz "\nInvalid Input. Program will exit"
 totalHitRateMsg: .asciiz "\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
 totalRuntimeMsg: .asciiz "\nTotal Runtime (total processor cycles assuming \nthat the last memory access was the last instruction of the program): "
 avgMemAccessLatencyMsg: .asciiz "\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
+
+totalHitRate: .word -1
+totalRuntime: .word -1
+avgMemAccessLatency: .word -1
 
 .text
 main:
@@ -90,7 +94,7 @@ b setAssociativeLRU
 
 randomReplacement:
 ##go to 
-##check if $t1 0==0 --> fully or $t1 == 1 --> direct mapping or it's set associative
+##check if $t1 == 0 then fully     or     $t1 == 1 then direct mapping     else it's set associative
 beq $t1, $0, fullyAssociativeRnd
 beq $t1, 1, directMappingRnd
 b setAssociativeRnd
@@ -158,16 +162,18 @@ li $v0, 4
 la $a0, totalHitRateMsg
 syscall
 
-ori $v0, $0, 1			# Display the total hit rate	
-add $a0, $s0, $0	 	#TODO - change $s0 to totalHitRate
+ori $v0, $0, 1			# Display the total hit rate
+lw $s0, totalHitRate	
+add $a0, $s0, $0	
 syscall
 
 li $v0, 4
 la $a0, totalRuntimeMsg
 syscall
 
-ori $v0, $0, 1			# Display the total runtime		
-add $a0, $s0, $0		#TODO - change $s0 to totalRuntime 
+ori $v0, $0, 1			# Display the total runtime	
+lw $s0, totalRuntime	
+add $a0, $s0, $0	
 syscall
 
 li $v0, 4
@@ -175,7 +181,8 @@ la $a0, avgMemAccessLatencyMsg
 syscall
 
 ori $v0, $0, 1			# Display the average memory access latency	
-add $a0, $s0, $0	 	#TODO - change $s0 to avgMemAccessLatency
+lw $s0, avgMemAccessLatency
+add $a0, $s0, $0 #TODO - test if this works
 syscall
 
 
