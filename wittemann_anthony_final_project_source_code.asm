@@ -17,6 +17,19 @@ totalHitRateMsg: .asciiz "\nTotal Hit Rate (The percentage of memory ops \n(i.e.
 totalRuntimeMsg: .asciiz "\nTotal Runtime (total processor cycles assuming \nthat the last memory access was the last instruction of the program): "
 avgMemAccessLatencyMsg: .asciiz "\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
 
+fullyAssociativeLRUMsg: .asciiz "\nSimulating a Fully Associate LRU Cache..."
+setAssociativeLRUMsg: .asciiz "\nSimulating a Set Associate LRU Cache..."
+directMappingLRUMsg: .asciiz "\nSimulating a Direct Mapping LRU Cache..."
+fullyAssociativeRndMsg: .asciiz "\nSimulating a Fully Associate Random Replacement Cache..."
+setAssociativeRndMsg: .asciiz "\nSimulating a Set Associate Random Replacement Cache..."
+directMappingRndMsg: .asciiz "\nSimulating a Direct Mapping Random Replacement Cache..."
+
+space: .asciiz "  "
+
+ 
+testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ----"
+testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
+
 totalHitRate: .word -1
 totalRuntime: .word -1
 avgMemAccessLatency: .word -1
@@ -70,15 +83,16 @@ la $a0, missPenaltyMsg
 syscall 		#ask for miss penalty
 li $v0,5
 syscall 		#read in value
-bltz $v0, exit		# check if less than 0
+blt $v0, $0, exit	# check if less than 0
 add $t4,$v0,$zero 	# $t4 = miss penalty
+
+
+
 
 
 ##check for LRU ($t3 = 1) or Random ($t3 = 0) 
 beq $t3, $0, randomReplacement
-beq $t3, 1, LRU
-
-
+b LRU
 
 ####^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ####SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** *** SUBROUTINES *** *** ***
@@ -86,9 +100,10 @@ beq $t3, 1, LRU
 
 LRU:
 ##check for set Associate LRU
-##check if $t1 != 0 && $t1 != 1 (which means that it's set associative
+##check if $t1 == 0 then fully     or     $t1 == 1 then direct mapping     else it's set associative
 beq $t1, $0, fullyAssociativeLRU
-beq $t1, 1, directMappingLRU
+li $t7, 1
+beq $t1, $t7, directMappingLRU
 b setAssociativeLRU
 
 
@@ -96,51 +111,68 @@ randomReplacement:
 ##go to 
 ##check if $t1 == 0 then fully     or     $t1 == 1 then direct mapping     else it's set associative
 beq $t1, $0, fullyAssociativeRnd
-beq $t1, 1, directMappingRnd
+li $t7, 1
+beq $t1, $t7, directMappingRnd
 b setAssociativeRnd
 
 
 # LRU REPLACEMENT *** *** LRU REPLACEMENT *** *** LRU REPLACEMENT *** *** LRU REPLACEMENT *** *** LRU REPLACEMENT *** ***
 ####You ONLY NEED to implement set associative cache with LRU replacement policy. *** SET ASSOCIATIVE CACHE WITH LRU REPLACEMENT POLICY
 ####---------------------------------------------------------------------------------------------------------------------------------
-setAssociativeLRU:
-
+setAssociativeLRU:	#TODO IMPORTANT
+li $v0, 4
+la $a0, setAssociativeLRUMsg
+syscall 		
 
 
 ####can go in any cache unit, least recently used replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 fullyAssociativeLRU:
+li $v0, 4
+la $a0, fullyAssociativeLRUMsg
+syscall 		
 
 
 ####can go in any cache unit, least recently used replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 directMappingLRU:
+li $v0, 4
+la $a0, directMappingLRUMsg
+syscall 
 
 
 # RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** *** RANDOM REPLACEMENT *** ***
 ####maps from memory to cache set directly, random replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 setAssociativeRnd:
+li $v0, 4
+la $a0, setAssociativeRndMsg
+syscall 
 
 
 
 ####can go in any cache unit, random replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 fullyAssociativeRnd:
-
+li $v0, 4
+la $a0, fullyAssociativeRndMsg
+syscall 
 
 ####maps from memory to cache directly, random replacement scheme
 ####---------------------------------------------------------------------------------------------------------------------------------
 directMappingRnd:
-
+li $v0, 4
+la $a0, directMappingRndMsg
+syscall 
 
 
 
 
 ####called after a replacement policy input != 0, checks if equal to 1
 isEqualTo1:
-bne $v0, 1, exit
-j makeReplacementVariable
+li $s0, 1
+beq $v0, $s0, makeReplacementVariable
+j exit
 
 ####Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** *** Checks is $v0 is a power of 2 *** *** 
 ####---------------------------------------------------------------------------------------------------------------------------------
