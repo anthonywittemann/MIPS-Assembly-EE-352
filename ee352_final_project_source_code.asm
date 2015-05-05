@@ -24,26 +24,6 @@ avgMemAccessLatency: .word -1
 .text
 main:
 
-## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
-li $s0, 0
-	
-randomNumber:
-	li $a0, 0 #seed random generation with 0
-	li $a1, 64 #setting upper bound to 63 inclusive
-	li $v0, 42 ##prepare to syscall random generator
-	syscall #random number is now stored in $a0
-printAfterGeneratingNumber:	
-	li $v0, 1
-	syscall
-	li  $a0, 0xA #ascii code for LF, if you have any trouble try 0xD for CR.
-        li $v0, 0xB #syscall 11 prints the lower 8 bits of $a0 as an ascii character.
-        syscall
-
-add $s0, $s0, 1
-bne $s0, 1000, randomNumber
-##_____________________________________________________________________________________________________________________
-
-
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
 add $t7, $0, 10	# $t7 = 1000 (number of cycles = 1000)
 ##TODO: change back to 10000
@@ -69,10 +49,27 @@ j while			# continue while loop
 
 
 ### SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** ***
+
+#input: $t6 (random Mem address
 generateMemAddress:
 li $v0, 4
 la $a0, testingMsg
 syscall 		# get HERE?
+
+## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
+randomNumber:
+	li $a0, 0 #seed random generation with 0
+	li $a1, 64 #setting upper bound to 63 inclusive
+	li $v0, 42 ##prepare to syscall random generator
+	syscall #random number is now stored in $a0
+printAfterGeneratingNumber:	
+	li $v0, 1
+	syscall
+	li  $a0, 0xA #ascii code for LF, if you have any trouble try 0xD for CR.
+        li $v0, 0xB #syscall 11 prints the lower 8 bits of $a0 as an ascii character.
+        syscall
+##_____________________________________________________________________________________________________________________
+
 jr $ra
 
 mapToSetInCache:
