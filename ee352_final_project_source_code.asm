@@ -62,6 +62,7 @@ randomNumber:
 	li $a1, 64 #setting upper bound to 63 inclusive
 	li $v0, 42 ##prepare to syscall random generator
 	syscall #random number is now stored in $a0
+	la $t6, $a0
 printAfterGeneratingNumber:	
 	li $v0, 1
 	syscall
