@@ -11,9 +11,11 @@ totalRuntimeMsg: .asciiz "\nTotal Runtime (total processor cycles assuming \ntha
 avgMemAccessLatencyMsg: .asciiz "\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
 
 space: .asciiz "  "
+newLine: .asciiz "\n"
  
 testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ----"
 testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
+traceFileMsg: .asciiz "Memory Address Trace:\n"
 
 totalHitRate: .word -1
 totalRuntime: .word -1
@@ -22,7 +24,22 @@ avgMemAccessLatency: .word -1
 .text
 main:
 
+	li $s0, 0
+	
+randomNumber:
+	li $a0, 0 #seed random generation with 0
+	li $a1, 64 #setting upper bound to 63 inclusive
+	li $v0, 42 ##prepare to syscall random generator
+	syscall #random number is now stored in $a0
+printAfterGeneratingNumber:	
+	li $v0, 1
+	syscall
+	li  $a0, 0xA #ascii code for LF, if you have any trouble try 0xD for CR.
+        li $v0, 0xB #syscall 11 prints the lower 8 bits of $a0 as an ascii character.
+        syscall
 
+add $s0, $s0, 1
+bne $s0, 1000, randomNumber
 
 
 
