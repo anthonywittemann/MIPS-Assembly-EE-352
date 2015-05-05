@@ -6,11 +6,12 @@
 # Miss Penalty: 4 cycles
 
 .data
-totalHitRateMsg: .asciiz "\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
-totalRuntimeMsg: .asciiz "\nTotal Runtime (total processor cycles assuming \nthat the last memory access was the last instruction of the program): "
-avgMemAccessLatencyMsg: .asciiz "\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
+totalHitRateMsg: .asciiz "\n\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
+totalRuntimeMsg: .asciiz "\n\nTotal Runtime (total processor cycles assuming \nthat the last memory access was the last instruction of the program): "
+avgMemAccessLatencyMsg: .asciiz "\n\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
 
 space: .asciiz "  "
+println: .asciiz "\n"
  
 testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ----"
 testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
@@ -22,10 +23,46 @@ avgMemAccessLatency: .word -1
 .text
 main:
 
+### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
+add $t7, $0, 10	# $t7 = 1000 (number of cycles = 1000)
+##TODO: change back to 10000
+
+while:     		# while:
+beq $t7, $0, exit	# base case: if ($t7 == 0): we've completed all the cycles of the simulation
+jal generateMemAddress
+li $v0, 4
+la $a0, println
+syscall 
+jal mapToSetInCache
+li $v0, 4
+la $a0, println
+syscall 
+jal checkIfSetInCache
+li $v0, 4
+la $a0, println
+syscall 
+sub $t7, $t7, 1		# $t7--
+j while			# continue while loop
 
 
+### SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** ***
+generateMemAddress:
+li $v0, 4
+la $a0, testingMsg
+syscall 		# get HERE?
+jr $ra
 
+mapToSetInCache:
+li $v0, 4
+la $a0, testingMsg1
+syscall 		# get HERE?
+jr $ra
 
+checkIfSetInCache:
+li $v0, 4
+la $a0, testingMsg
+syscall 		# get HERE?
+jr $ra
 
 
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
