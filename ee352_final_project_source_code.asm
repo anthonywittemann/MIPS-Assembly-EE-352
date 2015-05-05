@@ -11,10 +11,11 @@ totalRuntimeMsg: .asciiz "\n\nTotal Runtime (total processor cycles assuming \nt
 avgMemAccessLatencyMsg: .asciiz "\n\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
 
 space: .asciiz "  "
-println: .asciiz "\n"
+newLine: .asciiz "\n"
  
 testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ----"
 testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
+traceFileMsg: .asciiz "Memory Address Trace:\n"
 
 totalHitRate: .word -1
 totalRuntime: .word -1
@@ -22,6 +23,26 @@ avgMemAccessLatency: .word -1
 
 .text
 main:
+
+## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
+li $s0, 0
+	
+randomNumber:
+	li $a0, 0 #seed random generation with 0
+	li $a1, 64 #setting upper bound to 63 inclusive
+	li $v0, 42 ##prepare to syscall random generator
+	syscall #random number is now stored in $a0
+printAfterGeneratingNumber:	
+	li $v0, 1
+	syscall
+	li  $a0, 0xA #ascii code for LF, if you have any trouble try 0xD for CR.
+        li $v0, 0xB #syscall 11 prints the lower 8 bits of $a0 as an ascii character.
+        syscall
+
+add $s0, $s0, 1
+bne $s0, 1000, randomNumber
+##_____________________________________________________________________________________________________________________
+
 
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
 add $t7, $0, 10	# $t7 = 1000 (number of cycles = 1000)
@@ -31,18 +52,20 @@ while:     		# while:
 beq $t7, $0, exit	# base case: if ($t7 == 0): we've completed all the cycles of the simulation
 jal generateMemAddress
 li $v0, 4
-la $a0, println
+la $a0, newLine
 syscall 
 jal mapToSetInCache
 li $v0, 4
-la $a0, println
+la $a0, newLine
 syscall 
 jal checkIfSetInCache
 li $v0, 4
-la $a0, println
+la $a0, newLine
 syscall 
 sub $t7, $t7, 1		# $t7--
 j while			# continue while loop
+
+
 
 
 ### SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** ***
