@@ -50,7 +50,9 @@ j while			# continue while loop
 
 ### SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** ***
 
-#input: $t6 (random Mem address
+# input: $t6 (nothing yet) 
+# output: $t6 (random Mem address)
+# generates a random hexadeciaml memory address from 0 to 2^32-1
 generateMemAddress:
 li $v0, 4
 la $a0, testingMsg
