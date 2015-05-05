@@ -1,7 +1,26 @@
 # Cache Configuration: 1KB 2D array (64 sets which is 4 way set associative - each word entry is 4 bytes)
+# Line Size: 4 bytes
+# Associativity: set associative
+# Data Size: 1 KB
+# Replacement Policy: LRU
+# Miss Penalty: 4 cycles
 
+.data
+totalHitRateMsg: .asciiz "\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
+totalRuntimeMsg: .asciiz "\nTotal Runtime (total processor cycles assuming \nthat the last memory access was the last instruction of the program): "
+avgMemAccessLatencyMsg: .asciiz "\nAverage Memory Access Latency \n(The average number of cycles needed to complete a memory access): "
 
+space: .asciiz "  "
+ 
+testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ----"
+testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
 
+totalHitRate: .word -1
+totalRuntime: .word -1
+avgMemAccessLatency: .word -1
+
+.text
+main:
 
 
 
