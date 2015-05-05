@@ -59,12 +59,12 @@ syscall 		# get HERE?
 ## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
 randomNumber:
 	li $a0, 0 #seed random generation with 0
-	li $a1, 64 #setting upper bound to 63 inclusive
+	li $a1, 0x7fffffff #setting upper bound to 63 inclusive
 	li $v0, 42 ##prepare to syscall random generator
 	syscall #random number is now stored in $a0
-	la $t6, $a0
+	la $t6, ($a0)
 printAfterGeneratingNumber:	
-	li $v0, 1
+	li $v0, 34
 	syscall
 	li  $a0, 0xA #ascii code for LF, if you have any trouble try 0xD for CR.
         li $v0, 0xB #syscall 11 prints the lower 8 bits of $a0 as an ascii character.
