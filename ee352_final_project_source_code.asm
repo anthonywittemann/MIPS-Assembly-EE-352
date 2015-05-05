@@ -52,7 +52,7 @@ j while			# continue while loop
 
 # input: $t6 (nothing yet) 
 # output: $t6 (random Mem address)
-# generates a random hexadeciaml memory address from 0 to 2^32-1
+# generates a random 32 bit hexadeciaml memory address that the CPU needs to access 
 generateMemAddress:
 li $v0, 4
 la $a0, testingMsg
@@ -61,7 +61,7 @@ syscall 		# get HERE?
 ## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
 randomNumber:
 	li $a0, 0 #seed random generation with 0
-	li $a1, 0x7fffffff #setting upper bound to 63 inclusive
+	li $a1, 0x7fffffff #setting upper bound to 2^32 -1
 	li $v0, 42 ##prepare to syscall random generator
 	syscall #random number is now stored in $a0
 	la $t6, ($a0)
