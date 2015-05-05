@@ -2,6 +2,13 @@
 
 
 
+
+
+
+
+
+
+
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
 displayResults:
@@ -35,11 +42,7 @@ syscall
 
 ####EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
-exit:			#used for invalid input
-li $v0, 4
-la $a0, invalidInputMsg
-syscall
 
-exit1: 			#used for normal exit 
+exit: 			#used for normal exit 
 li $v0,10		# bye, bye
 syscall
