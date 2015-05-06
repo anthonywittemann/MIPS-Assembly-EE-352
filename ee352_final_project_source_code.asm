@@ -161,6 +161,11 @@ jr $ra			# fetch next memory address
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
 displayResults:
+
+li $v0, 1	#print out total number of hits
+add $a0, $t8, $0
+syscall
+
 li $v0, 4
 la $a0, totalHitRateMsg
 syscall
