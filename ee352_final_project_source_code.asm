@@ -125,15 +125,38 @@ bne  	$t2, $s4, loopingOverRow
 jr $ra
 
 replaceCache: #replace from the back of the column counter
-
-
+beq $s1, 0, endReplaceCache
+sub $s4, $s3,1
+sll $s4, $s4, 2
+replaceCacheLoop:
+lw $s5, data($s4)
+sw $s5, data($s3)
+la $s3, ($s4)
+sub $s4, $s3,1
+sll $s4, $s4, 2
+sub $s1, $s1, 1
+beq $s1, 0, replaceCacheLoop
+endReplaceCache:
+sw $t2, data($s3)
 jr $ra		# fetch next memory address 
 
 replaceCacheHit: #replace from the back of the column counter and report a hit
 add $t8, $t8, 1 	#hitCount++
-
-
-jr $ra		# fetch next memory address 
+beq $s1, 0, endReplaceCacheHit
+sub $s4, $s3,1
+sll $s4, $s4, 2
+replaceCacheLoopHit:
+lw $s5, data($s4)
+sw $s5, data($s3)
+la $s3, ($s4)
+sub $s4, $s3,1
+sll $s4, $s4, 2
+sub $s1, $s1, 1
+beq $s1, 0, replaceCacheLoopHit
+endReplaceCacheHit:
+sw $t2, data($s3)
+jr $ra	
+		# fetch next memory address 
 
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
