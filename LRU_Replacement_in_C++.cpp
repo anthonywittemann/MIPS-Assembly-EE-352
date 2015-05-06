@@ -4,6 +4,7 @@ randomAddresses int[1000];
 int hit;
 int miss;
 
+
 for (auto address: randomAddresses){
 	int testRow = address%64;
 	for(int i=0; i < 4; i++){
