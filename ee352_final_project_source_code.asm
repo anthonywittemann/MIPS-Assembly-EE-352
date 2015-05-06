@@ -135,7 +135,7 @@ la $s3, ($s4)
 sub $s4, $s3,1
 sll $s4, $s4, 2
 sub $s1, $s1, 1
-beq $s1, 0, replaceCacheLoop
+bne $s1, 0, replaceCacheLoop
 endReplaceCache:
 sw $t2, data($s3)
 jr $ra		# fetch next memory address 
@@ -152,7 +152,7 @@ la $s3, ($s4)
 sub $s4, $s3,1
 sll $s4, $s4, 2
 sub $s1, $s1, 1
-beq $s1, 0, replaceCacheLoopHit
+bne $s1, 0, replaceCacheLoopHit
 endReplaceCacheHit:
 sw $t2, data($s3)
 jr $ra	
