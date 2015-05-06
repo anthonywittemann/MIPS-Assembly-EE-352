@@ -119,9 +119,24 @@ li $v0, 4
 la $a0, totalHitRateMsg
 syscall
 
-ori $v0, $0, 1			# Display the total hit rate	
-add $a0, $t8, $0	
+# input: $t4 (number of memory calls), $t8 (number of hits) 
+# output: $f0 avg mem access latency
+# divides the number of hits by the number of memory calls
+calcTotalHitRate:
+sw   $t4, -88($fp)	#convert $t4 to float
+lwc1 $f4, -88($fp)	
+cvt.s.w $f1, $f4
+
+sw   $t8, -88($fp)	#convert $t8 to float
+lwc1 $f8, -88($fp)
+cvt.s.w $f2, $f8
+
+div.s $f12, $f2, $f1
+
+ori $v0, $0, 2			# Display the hit rate	
 syscall
+
+
 
 
 li $v0, 4
@@ -131,6 +146,7 @@ syscall
 ori $v0, $0, 1			# Display the total runtime ($t7 or num cycles)		
 add $a0, $t7, $0	
 syscall
+
 
 
 
