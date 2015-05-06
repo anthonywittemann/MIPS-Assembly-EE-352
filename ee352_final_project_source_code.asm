@@ -19,9 +19,9 @@ traceFileMsg: .asciiz "Memory Address Trace:\n"
 
 missPenalty: .word 8
 
-totalHitRate: .word -1
-totalRuntime: .word -1
-avgMemAccessLatency: .word -1
+#totalHitRate: .word -1 = $t8
+#totalRuntime: .word -1 = $t7
+#avgMemAccessLatency: .word -1 = something we calculate at the end
 
 data:    .word     0 : 256       # storage for 64x4 matrix of cache locations
          
@@ -30,19 +30,22 @@ data:    .word     0 : 256       # storage for 64x4 matrix of cache locations
 main:
 
 li       $t0, 64        # $t0 = number of rows
-li       $t1, 4        # $t1 = number of columns
+li       $t1, 4         # $t1 = number of columns
 move     $s0, $zero     # $s0 = row counter
 move     $s1, $zero     # $s1 = column counter
 move     $t2, $zero     # $t2 = the value to be stored
+move 	 $t8, $zero	# $t8 = totalHitRate
 #  Each loop iteration will store incremented $t1 value into next element of matrix.
 #  Offset is calculated at each iteration. offset = 4 * (row*#cols+col)
 
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
-add $t7, $0, 10	# $t7 = 1000 (number of cycles = 1000)
-##TODO: change back to 10000
+add $t7, $0, 0	# $t7 = 0 (number of cycles = 0)
+##TODO: change back to 9999
+li $t9, 9
 
-while:     		# while:
-ble $t7, $0, exit	# base case: if ($t7 == 0): we've completed all the cycles of the simulation
+
+while:     			# while:
+bgt $t7, $t9, displayResults	# base case: if ($t7 == 0): we've completed all the cycles of the simulation
 jal generateMemAddress
 li $v0, 4
 la $a0, newLine
@@ -55,10 +58,9 @@ jal checkIfSetInCache
 li $v0, 4
 la $a0, newLine
 syscall 
-sub $t7, $t7, 1		# $t7--
+add $t7, $t7, 1		# totalRuntime++ (cycles)
+add $t4, $t4, 1		# totalMemAccessCalls++
 j while			# continue while loop
-
-
 
 
 ### SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** *** SUBROUTINES *** ***
@@ -117,28 +119,43 @@ li $v0, 4
 la $a0, totalHitRateMsg
 syscall
 
-ori $v0, $0, 1			# Display the total hit rate
-lw $s7, totalHitRate	
-add $a0, $s7, $0	
+ori $v0, $0, 1			# Display the total hit rate	
+add $a0, $t8, $0	
 syscall
+
 
 li $v0, 4
 la $a0, totalRuntimeMsg
 syscall
 
-ori $v0, $0, 1			# Display the total runtime	
-lw $s0, totalRuntime	
-add $a0, $s0, $0	
+ori $v0, $0, 1			# Display the total runtime ($t7 or num cycles)		
+add $a0, $t7, $0	
 syscall
+
+
 
 li $v0, 4
 la $a0, avgMemAccessLatencyMsg
 syscall
 
-ori $v0, $0, 1			# Display the average memory access latency	
-lw $s0, avgMemAccessLatency
-add $a0, $s0, $0 
+# input: $t4 (number of memory calls), $t7 (number of cycles) 
+# output: $f0 avg mem access latency
+# divides the number of cycles by the number of memory calls
+calcAvgMemAccessLatency:
+sw   $t4, -88($fp)	#convert $t4 to float
+lwc1 $f4, -88($fp)	
+cvt.s.w $f1, $f4
+
+sw   $t7, -88($fp)	#convert $t7 to float
+lwc1 $f7, -88($fp)
+cvt.s.w $f2, $f7
+
+div.s $f12, $f2, $f1
+
+ori $v0, $0, 2			# Display the average memory access latency	
 syscall
+
+
 
 
 ####EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** *** EXIT *** ***
