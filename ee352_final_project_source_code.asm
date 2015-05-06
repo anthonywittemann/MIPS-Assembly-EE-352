@@ -140,7 +140,7 @@ la $a0, totalHitRateMsg
 syscall
 
 # input: $t4 (number of memory calls), $t8 (number of hits) 
-# output: $f0 avg mem access latency
+# output: $f12 hit rate
 # divides the number of hits by the number of memory calls
 calcTotalHitRate:
 sw   $t4, -88($fp)	#convert $t4 to float
@@ -151,9 +151,9 @@ sw   $t8, -88($fp)	#convert $t8 to float
 lwc1 $f8, -88($fp)
 cvt.s.w $f2, $f8
 
-div.s $f12, $f2, $f1
+div.s $f12, $f2, $f1	# divide to get hit rate
 
-ori $v0, $0, 2			# Display the hit rate	
+ori $v0, $0, 2		# Display the hit rate	
 syscall
 
 
@@ -163,7 +163,7 @@ li $v0, 4
 la $a0, totalRuntimeMsg
 syscall
 
-ori $v0, $0, 1			# Display the total runtime ($t7 or num cycles)		
+ori $v0, $0, 1		# Display the total runtime ($t7 or num cycles)		
 add $a0, $t7, $0	
 syscall
 
@@ -175,7 +175,7 @@ la $a0, avgMemAccessLatencyMsg
 syscall
 
 # input: $t4 (number of memory calls), $t7 (number of cycles) 
-# output: $f0 avg mem access latency
+# output: $f12 avg mem access latency
 # divides the number of cycles by the number of memory calls
 calcAvgMemAccessLatency:
 sw   $t4, -88($fp)	#convert $t4 to float
@@ -188,7 +188,7 @@ cvt.s.w $f2, $f7
 
 div.s $f12, $f2, $f1
 
-ori $v0, $0, 2			# Display the average memory access latency	
+ori $v0, $0, 2		# Display the average memory access latency	
 syscall
 
 
