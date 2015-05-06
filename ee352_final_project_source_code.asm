@@ -34,7 +34,9 @@ li       $t1, 4         # $t1 = number of columns
 move     $s0, $zero     # $s0 = row counter
 move     $s1, $zero     # $s1 = column counter
 move     $t2, $zero     # $t2 = the value to be stored
-move 	 $t8, $zero	# $t8 = totalHitRate
+move 	 $t8, $zero	# $t8 = totalHits
+move 	 $t4, $zero	# $t4 = totalMemCalls
+
 #  Each loop iteration will store incremented $t1 value into next element of matrix.
 #  Offset is calculated at each iteration. offset = 4 * (row*#cols+col)
 
