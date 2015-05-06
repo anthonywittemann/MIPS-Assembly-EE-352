@@ -131,7 +131,7 @@ loop2:    mult     $s0, $t1       # $s2 = row * #cols  (two-instruction sequence
          sw       $t2, data($s2) # store the value in matrix element
          # print out A+B         
          ori     $v0, $0, 1
-         add	$t4, $t3, $t2	#sum of loopin gup and down		
+         add	$t4, $t3, $t2	#sum of looping up and down		
 	 add  	$a0, $t4, $0	 
 	 syscall
 	 # print out space
