@@ -71,14 +71,23 @@ printAfterGeneratingNumber:
 	li  $a0, 0xA #ascii code for LF, if you have any trouble try 0xD for CR.
         li $v0, 0xB #syscall 11 prints the lower 8 bits of $a0 as an ascii character.
         syscall
-##_____________________________________________________________________________________________________________________
+
 
 jr $ra
+##_____________________________________________________________________________________________________________________
 
+
+
+# input: $t6 (memory adddress) 
+# output: $t5 (set in cache to store word in)
+# takes a memory address and maps it to a set in cache by moding it by 64
 mapToSetInCache:
-li $v0, 4
-la $a0, testingMsg1
-syscall 		# get HERE?
+li $s0, 64
+div	$t6,$s0		#  Lo = $t5 / 64   (integer quotient)
+mfhi	$t5		#  move quantity in special register Hi to $t5:   $t5 = Hi
+li $v0, 1		# print out set that it maps to
+add $a0, $t5, $0
+syscall
 jr $ra
 
 checkIfSetInCache:
