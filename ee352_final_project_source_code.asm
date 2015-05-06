@@ -5,6 +5,9 @@
 # Replacement Policy: LRU
 # Miss Penalty: 8 cycles
 
+# TODO incur miss penalty of 8 to $t7 (the CPU cycles) when there is a miss
+# TODO make sure that the hits ($t8) are incremented when there is a hit
+
 .data
 totalHitRateMsg: .asciiz "\n\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
 totalRuntimeMsg: .asciiz "\n\nTotal Runtime (total processor cycles assuming \nthat the last memory access was the last instruction of the program): "
@@ -155,8 +158,8 @@ sub $s1, $s1, 1
 bne $s1, 0, replaceCacheLoopHit
 endReplaceCacheHit:
 sw $t2, data($s3)
-jr $ra	
-		# fetch next memory address 
+jr $ra			# fetch next memory address 
+		
 
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
