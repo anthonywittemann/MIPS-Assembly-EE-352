@@ -3,7 +3,7 @@
 # Associativity: set associative
 # Data Size: 1 KB
 # Replacement Policy: LRU
-# Miss Penalty: 4 cycles
+# Miss Penalty: 8 cycles
 
 .data
 totalHitRateMsg: .asciiz "\n\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
@@ -17,19 +17,32 @@ testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING
 testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
 traceFileMsg: .asciiz "Memory Address Trace:\n"
 
+missPenalty: .word 8
+
 totalHitRate: .word -1
 totalRuntime: .word -1
 avgMemAccessLatency: .word -1
 
+data:    .word     0 : 256       # storage for 64x4 matrix of cache locations
+         
+         
 .text
 main:
+
+li       $t0, 64        # $t0 = number of rows
+li       $t1, 4        # $t1 = number of columns
+move     $s0, $zero     # $s0 = row counter
+move     $s1, $zero     # $s1 = column counter
+move     $t2, $zero     # $t2 = the value to be stored
+#  Each loop iteration will store incremented $t1 value into next element of matrix.
+#  Offset is calculated at each iteration. offset = 4 * (row*#cols+col)
 
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
 add $t7, $0, 10	# $t7 = 1000 (number of cycles = 1000)
 ##TODO: change back to 10000
 
 while:     		# while:
-beq $t7, $0, exit	# base case: if ($t7 == 0): we've completed all the cycles of the simulation
+ble $t7, $0, exit	# base case: if ($t7 == 0): we've completed all the cycles of the simulation
 jal generateMemAddress
 li $v0, 4
 la $a0, newLine
@@ -82,8 +95,8 @@ jr $ra
 # output: $t5 (set in cache to store word in)
 # takes a memory address and maps it to a set in cache by moding it by 64
 mapToSetInCache:
-li $s0, 64
-div	$t6,$s0		#  Lo = $t5 / 64   (integer quotient)
+li $s6, 64
+div	$t6,$s6		#  Lo = $t5 / 64   (integer quotient)
 mfhi	$t5		#  move quantity in special register Hi to $t5:   $t5 = Hi
 li $v0, 1		# print out set that it maps to
 add $a0, $t5, $0
@@ -105,8 +118,8 @@ la $a0, totalHitRateMsg
 syscall
 
 ori $v0, $0, 1			# Display the total hit rate
-lw $s0, totalHitRate	
-add $a0, $s0, $0	
+lw $s7, totalHitRate	
+add $a0, $s7, $0	
 syscall
 
 li $v0, 4
