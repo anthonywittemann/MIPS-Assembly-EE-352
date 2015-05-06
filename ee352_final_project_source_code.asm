@@ -111,7 +111,25 @@ checkIfSetInCache:
 li $v0, 4
 la $a0, testingMsg
 syscall 		# get HERE?
+
+checkIfSetInChacheLoop:
+#$s1 is column counter
+#$t1 is number of columns
+#$t2 is value
+mult $t5, $t1
+mflo $s3
+li $s1, -1
+loopingOverRow:
+add 	$s1, $s1, 1
+add      $s3, $s3, $s1  # $s3 += column counter
+sll      $s3, $s3, 2  
+bne  	$t2, data($s3), loopingOverRow
+beq 	$t2, data($s3), replaceCache
+beq 	$s1, 3, replaceCache
+sll      $s2, $s2, 2  
 jr $ra
+
+replaceCache: #replace from the back of the column counter
 
 
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
