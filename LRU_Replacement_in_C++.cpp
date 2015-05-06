@@ -1,8 +1,7 @@
 data int[64][4];
 randomAddresses int[1000];
 
-int hit;
-int miss;
+int hit;        //$t8
 
 
 for (auto address: randomAddresses){
@@ -11,8 +10,6 @@ for (auto address: randomAddresses){
 		if(data[testRow][i]==address||i==3){
 			if(data[testRow][i]==address){
 				hit++;
-			}else{
-				miss++;
 			}
 			for(int j=1; j<=i; j++){
 				data[testRow][j] = data[testRow][j-1];
