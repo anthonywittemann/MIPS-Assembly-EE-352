@@ -5,8 +5,7 @@
 # Replacement Policy: LRU
 # Miss Penalty: 8 cycles
 
-# TODO incur miss penalty of 8 to $t7 (the CPU cycles) when there is a miss
-# TODO make sure that the hits ($t8) are incremented when there is a hit
+# TODO make sure that the hits are truly hits (i.e. value from memory is also in the cache)
 
 .data
 totalHitRateMsg: .asciiz "\n\nTotal Hit Rate (The percentage of memory ops \n(i.e. lines in the trace file) that were hits): "
@@ -19,8 +18,6 @@ newLine: .asciiz "\n"
 testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING ----"
 testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
 traceFileMsg: .asciiz "Memory Address Trace:\n"
-
-missPenalty: .word 8
 
 #totalHitRate: .word -1 = $t8
 #totalRuntime: .word -1 = $t7
@@ -46,7 +43,7 @@ move 	 $t4, $zero	# $t4 = totalMemCalls
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
 add $t7, $0, 0	# $t7 = 0 (number of cycles = 0)
 ##TODO: change back to 9999
-li $t9, 9
+li $t9, 9999
 
 
 while:     			# while:
@@ -125,6 +122,7 @@ bne  	$t2, $s4, loopingOverRow
 jr $ra
 
 replaceCache: #replace from the back of the column counter
+add $t7, $t7, 100 	#incur miss penalty
 beq $s1, 0, endReplaceCache
 sub $s4, $s3,1
 sll $s4, $s4, 2
@@ -161,6 +159,8 @@ jr $ra			# fetch next memory address
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
 displayResults:
+
+
 
 li $v0, 1	#print out total number of hits
 add $a0, $t8, $0
