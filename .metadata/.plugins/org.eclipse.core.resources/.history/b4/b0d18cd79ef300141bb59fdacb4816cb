@@ -1,0 +1,20 @@
+package cachesim;
+
+public class CacheSimluator {
+	
+	private static int[][] cache = new int[64][4];
+	private static int[] memAddresses = new int[1000];
+	private static int hitCount = 0;
+	
+	
+	public static void main(String[] args) {
+		
+		
+		printOutputs();
+	}
+	
+	public static void printOutputs(){
+		System.out.println("Hit Count: " + hitCount);
+	}
+
+}

@@ -1,0 +1,38 @@
+package cachesim;
+
+public class CacheSimluator {
+	
+	private static int[][] cache = new int[64][4];
+	private static int[] memAddresses = new int[1000];
+	private static int hitCount = 0;
+	private static double hitRate = -1.0;
+	private static double avgMemAccessLatency = -1.0;
+	private static int totalRuntime = 0;
+	
+	
+	public static void main(String[] args) {
+		
+		performSimulation();
+		calculateOutputs();
+		printOutputs();
+	}
+	
+	
+	private static void performSimulation() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private static void calculateOutputs() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public static void printOutputs(){
+		System.out.println("Hit Rate: " + hitRate);
+		System.out.println("Average Memory Access Latency: " + avgMemAccessLatency);
+		System.out.println("Total Runtime: " + totalRuntime);
+	}
+
+}
