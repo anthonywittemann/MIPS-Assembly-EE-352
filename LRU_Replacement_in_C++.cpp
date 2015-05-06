@@ -1,5 +1,5 @@
-data int[64][4]
-randomAddresses int[1000]
+data int[64][4];
+randomAddresses int[1000];
 
 for (auto address: randomAddresses){
 	int testRow = address%64;
