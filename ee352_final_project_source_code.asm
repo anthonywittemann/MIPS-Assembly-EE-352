@@ -74,9 +74,6 @@ j while			# continue while loop
 # output: $t6 (random Mem address)
 # generates a random 32 bit hexadeciaml memory address that the CPU needs to access 
 generateMemAddress:
-li $v0, 4
-la $a0, testingMsg
-syscall 		# get HERE?
 
 ## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
 randomNumber:
@@ -138,7 +135,7 @@ la $s3, ($s4)
 sub $s4, $s3,1
 sll $s4, $s4, 2
 sub $s1, $s1, 1
-bne $s1, 0, replaceCacheLoop
+beq $s1, 0, replaceCacheLoop
 endReplaceCache:
 sw $t2, data($s3)
 jr $ra		# fetch next memory address 
@@ -155,7 +152,7 @@ la $s3, ($s4)
 sub $s4, $s3,1
 sll $s4, $s4, 2
 sub $s1, $s1, 1
-bne $s1, 0, replaceCacheLoopHit
+beq $s1, 0, replaceCacheLoopHit
 endReplaceCacheHit:
 sw $t2, data($s3)
 jr $ra			# fetch next memory address 
