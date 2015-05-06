@@ -108,29 +108,32 @@ syscall
 jr $ra
 
 checkIfSetInCache:
-li $v0, 4
-la $a0, testingMsg
-syscall 		# get HERE?
-
-checkIfSetInChacheLoop:
 #$s1 is column counter
 #$t1 is number of columns
 #$t2 is value
 mult $t5, $t1
 mflo $s3
 li $s1, -1
-loopingOverRow:
+loopingOverRow:		#$s3 give us the index of the LRU column in the set
 add 	$s1, $s1, 1
 add      $s3, $s3, $s1  # $s3 += column counter
 sll      $s3, $s3, 2  
-bne  	$t2, data($s3), loopingOverRow
-beq 	$t2, data($s3), replaceCache
-beq 	$s1, 3, replaceCache
-sll      $s2, $s2, 2  
+beq 	$s1, 3, replaceCache 
+lw 	$s4, data($s3)
+beq 	$t2, $s4, replaceCacheHit
+bne  	$t2, $s4, loopingOverRow
 jr $ra
 
 replaceCache: #replace from the back of the column counter
 
+
+jr $ra		# fetch next memory address 
+
+replaceCacheHit: #replace from the back of the column counter and report a hit
+add $t8, $t8, 1 	#hitCount++
+
+
+jr $ra		# fetch next memory address 
 
 ####RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** *** RESULTS *** ***
 ####---------------------------------------------------------------------------------------------------------------------------------
