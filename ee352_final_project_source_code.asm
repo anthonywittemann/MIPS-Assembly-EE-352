@@ -75,7 +75,7 @@ generateMemAddress:
 ## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
 randomNumber:
 	li $a0, 0 #seed random generation with 0
-	li $a1, 0x101 #setting upper bound to 2^32 -1
+	li $a1, 0x400 #setting upper bound to 2^32 -1
 	li $v0, 42 ##prepare to syscall random generator
 	#la $t2, ($a0)
 	syscall #random number is now stored in $a0
@@ -103,6 +103,9 @@ mfhi	$t5		#  move quantity in special register Hi to $t5:   $t5 = Hi
 li $v0, 1		# print out set that it maps to
 add $a0, $t5, $0
 syscall
+li $s6, 16
+div $t2, $s6
+mfhi $t3
 jr $ra
 
 checkIfSetInCache:
@@ -118,8 +121,11 @@ add      $s3, $s3, $s1  # $s3 += column counter
 sll      $s3, $s3, 2  
 beq 	$s1, 3, replaceCache 
 lw 	$s4, data($s3)
-beq 	$t2, $s4, replaceCacheHit
-bne  	$t2, $s4, loopingOverRow
+li $s6, 16
+div $s4, $s6
+mfhi $s5
+beq 	$t3, $s5, replaceCacheHit
+bne  	$t3, $s5, loopingOverRow
 jr $ra
 
 replaceCache: #replace from the back of the column counter
