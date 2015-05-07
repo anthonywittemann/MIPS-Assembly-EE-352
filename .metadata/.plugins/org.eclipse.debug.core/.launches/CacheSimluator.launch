@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/EE352#_1704835940_Wittemann/src/cachesim/CacheSimluator.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="cachesim.CacheSimluator"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="EE352#_1704835940_Wittemann"/>
+</launchConfiguration>

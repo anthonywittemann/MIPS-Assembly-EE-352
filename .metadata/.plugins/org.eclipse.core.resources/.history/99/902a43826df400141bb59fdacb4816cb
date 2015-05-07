@@ -1,0 +1,73 @@
+package cachesim;
+
+import java.util.Random;
+
+public class CacheSimluator {
+	
+	private static int[][] cache = new int[64][4];
+	private static int[] LRUcols = new int[64];
+	private static int hitCount = 0;
+	private static double hitRate = -1.0;
+	private static double avgMemAccessLatency = -1.0;
+	private static int totalRuntime = 0; //CPU cycles
+	private static int totalMemCalls = 0;
+	private static final int MAX_SIMULATION_TIME = 10000; //TODO change to 10000
+	private static final int MISS_PENALTY = 100;
+	
+	
+	public static void main(String[] args) {
+		performSimulation();
+		calculateOutputs();
+		printOutputs();
+	}
+	
+	
+	private static void performSimulation() {
+
+		while(totalRuntime < MAX_SIMULATION_TIME){
+			
+			//generate a random memory value
+			Random rand = new Random();
+			int randomAddress = Math.abs(rand.nextInt()); // Generates a random address between 0 and 2^32
+			System.out.println("Retrieving new memory address... " + randomAddress); // Prints it in hex, such as "0x14"
+
+			
+			//map address to a set in cache
+			int setInCache = randomAddress % 64;
+			
+			
+			//check if the set is in cache
+			boolean isInCache = false;
+			for(int col = 0; col < cache[setInCache].length; col++){
+				if(cache[setInCache][col] == randomAddress){
+					isInCache = true;
+				}
+			}
+			
+			
+			//add to cache and apply LRU if not currently there
+			if(!isInCache){
+				totalRuntime += MISS_PENALTY;//apply miss penalty
+				
+			}
+			
+			totalMemCalls++;
+			totalRuntime++;
+		}
+		
+		
+	}
+	
+	private static void calculateOutputs() {
+		hitRate = hitCount / totalMemCalls;
+		avgMemAccessLatency = totalMemCalls / totalRuntime;
+	}
+
+
+	public static void printOutputs(){
+		System.out.println("Hit Rate: " + hitRate);
+		System.out.println("Average Memory Access Latency: " + avgMemAccessLatency);
+		System.out.println("Total Runtime: " + totalRuntime);
+	}
+
+}
