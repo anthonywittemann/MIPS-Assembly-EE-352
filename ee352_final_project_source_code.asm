@@ -43,7 +43,7 @@ move 	 $t4, $zero	# $t4 = totalMemCalls
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
 add $t7, $0, 0	# $t7 = 0 (number of cycles = 0)
 ##TODO: change back to 9999
-li $t9, 9999
+li $t9, 100000
 
 
 while:     			# while:
@@ -75,10 +75,11 @@ generateMemAddress:
 ## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
 randomNumber:
 	li $a0, 0 #seed random generation with 0
-	li $a1, 0x7fffffff #setting upper bound to 2^32 -1
+	li $a1, 0x101 #setting upper bound to 2^32 -1
 	li $v0, 42 ##prepare to syscall random generator
+	#la $t2, ($a0)
 	syscall #random number is now stored in $a0
-	la $t6, ($a0)
+	la $t2, ($a0)
 printAfterGeneratingNumber:	
 	li $v0, 34
 	syscall
@@ -97,7 +98,7 @@ jr $ra
 # takes a memory address and maps it to a set in cache by moding it by 64
 mapToSetInCache:
 li $s6, 64
-div	$t6,$s6		#  Lo = $t5 / 64   (integer quotient)
+div	$t2,$s6		#  Lo = $t5 / 64   (integer quotient)
 mfhi	$t5		#  move quantity in special register Hi to $t5:   $t5 = Hi
 li $v0, 1		# print out set that it maps to
 add $a0, $t5, $0
@@ -122,7 +123,7 @@ bne  	$t2, $s4, loopingOverRow
 jr $ra
 
 replaceCache: #replace from the back of the column counter
-add $t7, $t7, 100 	#incur miss penalty
+add $t7, $t7, 5	#incur miss penalty
 beq $s1, 0, endReplaceCache
 sub $s4, $s3,1
 sll $s4, $s4, 2
