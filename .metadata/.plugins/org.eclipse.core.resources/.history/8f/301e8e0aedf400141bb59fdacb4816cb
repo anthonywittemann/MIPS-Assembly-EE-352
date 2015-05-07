@@ -2,10 +2,6 @@ package cachesim;
 
 import java.util.Random;
 
-//##########-------------------------------------------------------------------------------
-//#################################--------- EE 352 Final Project Anthony Wittemann -------
-//##---------------------------------------------------------------------------------------
-
 public class CacheSimluator {
 	
 	private static int[][] cache = new int[64][4];

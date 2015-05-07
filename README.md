@@ -4,5 +4,3 @@
 # ID: 1704835940
 # Email: awittema@usc.edu 
 # Run in MARS
-## Example
-http://www.ecs.umass.edu/ece/koren/architecture/Cache/frame1.htm
