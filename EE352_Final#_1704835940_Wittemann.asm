@@ -49,7 +49,7 @@ move 	 $t4, $zero	# $t4 = totalMemCalls
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
 add $t7, $0, 0	# $t7 = 0 (number of cycles = 0)
 ##TODO: change back to 9999
-li $t9, 100000
+li $t9, 10000
 
 
 while:     			# while:
@@ -81,7 +81,7 @@ generateMemAddress:
 ## TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ TRACEFILE +++ +++ ###
 randomNumber:
 	li $a0, 0 #seed random generation with 0
-	li $a1, 0x101 #setting upper bound to 2^8 -1    -- used to have 2^32-1 but got 0 hit rate
+	li $a1, 0x400 #setting upper bound to 2^10 -1    -- used to have 2^32-1 but got 0 hit rate
 	li $v0, 42 ##prepare to syscall random generator
 	#la $t2, ($a0)
 	syscall #random number is now stored in $a0
@@ -104,8 +104,8 @@ jr $ra
 # takes a memory address and maps it to a set in cache by moding it by 64
 mapToSetInCache:
 li $s6, 64
-div	$t2,$s6		#  Lo = $t5 / 64   (integer quotient)
-mfhi	$t5		#  move quantity in special register Hi to $t5:   $t5 = Hi
+div 	$t2,$s6		#  $t5 / 64  -used for modulo
+mfhi	$t5		#  move remainder in special register Hi to $t5:   $t5 = Hi
 li $v0, 1		# print out set that it maps to
 add $a0, $t5, $0
 syscall
