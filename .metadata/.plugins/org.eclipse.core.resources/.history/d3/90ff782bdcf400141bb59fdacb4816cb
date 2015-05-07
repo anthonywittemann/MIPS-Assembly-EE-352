@@ -72,7 +72,7 @@ public class CacheSimluator {
 	
 	private static void calculateOutputs() {
 		hitRate = ((double) hitCount) / ((double) totalMemCalls);
-		avgMemAccessLatency = ((double) totalRuntime) / ((double) totalMemCalls);
+		avgMemAccessLatency = ((double) totalMemCalls) / ((double) totalRuntime);
 	}
 
 

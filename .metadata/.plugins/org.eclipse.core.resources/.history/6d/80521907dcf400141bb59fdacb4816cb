@@ -72,12 +72,12 @@ public class CacheSimluator {
 	
 	private static void calculateOutputs() {
 		hitRate = ((double) hitCount) / ((double) totalMemCalls);
-		avgMemAccessLatency = ((double) totalRuntime) / ((double) totalMemCalls);
+		avgMemAccessLatency = ((double) totalMemCalls) / ((double) totalRuntime);
 	}
 
 
 	public static void printOutputs(){
-		//System.out.println("\nMem Calls: " + totalMemCalls);
+		System.out.println("\nMem Calls: " + totalMemCalls);
 		
 		System.out.println("Hit Rate: " + hitRate);
 		System.out.println("Average Memory Access Latency: " + avgMemAccessLatency);
