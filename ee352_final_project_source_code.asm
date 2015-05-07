@@ -19,6 +19,8 @@ testingMsg: .asciiz "TESTING ---- TESTING ---- TESTING ---- TESTING ---- TESTING
 testingMsg1: .asciiz "TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 **** TESTING1 ****"
 traceFileMsg: .asciiz "Memory Address Trace:\n"
 
+fp1: .float 1.0
+
 #totalHitRate: .word -1 = $t8
 #totalRuntime: .word -1 = $t7
 #avgMemAccessLatency: .word -1 = something we calculate at the end
@@ -43,7 +45,7 @@ move 	 $t4, $zero	# $t4 = totalMemCalls
 ### This program will simulate 1000 CPU cycles accessing cache *** *** This program will simulare 1000 CPU cycles accessing cache ### 
 add $t7, $0, 0	# $t7 = 0 (number of cycles = 0)
 ##TODO: change back to 9999
-li $t9, 100000
+li $t9, 10000
 
 
 while:     			# while:
@@ -189,7 +191,11 @@ sw   $t8, -88($fp)	#convert $t8 to float
 lwc1 $f8, -88($fp)
 cvt.s.w $f2, $f8
 
+
 div.s $f12, $f2, $f1	# divide to get hit rate
+
+l.s $f5, fp1
+sub.s $f12, $f5, $f12
 
 ori $v0, $0, 2		# Display the hit rate	
 syscall
