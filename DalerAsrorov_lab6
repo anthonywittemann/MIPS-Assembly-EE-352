@@ -1,0 +1,161 @@
+# Title: 	Lab6 assignment - Processor Simulation with ALU operations
+# Author: 	Daler Asrorov
+# Due Date:	Nov. 13th, 2015 (11 AM.)
+# Date:		Nov 12th, 2015 (9PM)
+.data
+space: .asciiz " "
+instructionMemory:	.word 0x00221820, 0x00222024, 0x00222825, 0x00223022
+intRegFile:		.word 0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31
+
+.text
+
+	
+	
+	li $t0, 4
+	la $t1, instructionMemory
+
+
+StartSimul:
+	beqz $t0, EndSimul
+	lw $t2, ($t1)
+	
+	andi $t3, $t2, 0x003f #get function
+	beq $t3, 0x00000020, Add
+	beq $t3, 0x00000024, And
+	beq $t3, 0x00000025, Or
+	beq $t3, 0x00000022, Sub
+
+
+    	
+Add:
+	srl $t3, $t2, 21
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t5, ($t4)
+	
+	srl $t3, $t2, 16
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t5, ($t4) #value of register
+	
+	add $t5, $t5, $t6 #and 
+	
+	srl $t3, $t2, 11
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	sw $t5,($t4)
+	j EndOperation    	
+And:
+	srl $t3, $t2, 21
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t5, ($t4)
+	
+	srl $t3, $t2, 16
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t5, ($t4) #value of register
+	
+	and $t5, $t5, $t6 #and 
+	
+	srl $t3, $t2, 11
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	sw $t5,($t4)
+	j EndOperation
+
+Or: 
+	srl $t3, $t2, 21
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t5, ($t4)
+	
+	srl $t3, $t2, 16
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t6, ($t4)
+	
+	or $t5, $t5, $t6
+	
+
+	srl $t3, $t2, 11
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	sw $t5,($t4)
+	j EndOperation
+	
+Sub:
+	srl $t3, $t2, 21
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t5, ($t4)
+	
+	srl $t3, $t2, 16
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	lw $t6, ($t4)
+	
+	sub $t5, $t5, $t6
+	
+	srl $t3, $t2, 11
+	andi $t3, $t3, 0x001f
+	sll $t3, $t3, 2
+	la $t4, intRegFile
+	add $t4, $t4, $t3
+	sw $t5,($t4)
+	j EndOperation
+
+
+EndOperation:
+	addi $t1, $t1, 4
+	subi $t0, $t0, 1
+	j StartSimul
+	
+
+EndSimul:
+	jal DumpRegisters
+    	li $v0, 10                 # Exit program.  
+    	syscall
+
+DumpRegisters: # Dump the registers on the screen.
+	li $t0, 32 # Set a counter as the number of the registers (= 32).
+	la $t1, intRegFile # Load the address of the integer register file 'intRegFile'.
+Loop1:	lw $t2, ($t1)	 # Load the value at $t0 into $t1.
+	beqz $t0, LoopEnd1 # Exit the loop.
+	
+	
+	add $a0,$t2,$0	# Move $t1 to $a0.
+    	li $v0, 1      	# Print integer.              
+    	syscall
+
+    	la $a0, space	# Load a space:  " ".
+    	li $v0, 4     	# Print string.               
+    	syscall
+	
+	addi $t1, $t1, 4 # Increment the address of the pointer to 'intRegFile'by 4.
+	subi $t0, $t0, 1 # Increment the address of 'theArray' by 4.
+	j Loop1 	# Jump to 'Cont1'.
+	
+    	LoopEnd1:	jr $ra		#return
